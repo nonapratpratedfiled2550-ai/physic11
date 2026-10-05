@@ -6,177 +6,258 @@
 <title>คลื่นแม่เหล็กไฟฟ้า — สื่อจำลองเชิงโต้ตอบ</title>
 <style>
   :root {
-    --bg: #e4ecee;
-    --ink: #1c2b33;
-    --muted: #5c6f7a;
-    --panel: #fbfcfd;
-    --line: #d3dee3;
-    --red: #d62828;
-    --blue: #1d4e9e;
-    --gold: #8a6508;
-    --teal: #0f6e6e;
-    --teal-soft: #e7f4f2;
-    --warn: #fff8ef;
-    --warn-ink: #7a3e12;
-    --ok: #f3faf4;
-    --ok-ink: #14532d;
+    --bg: #07090d;
+    --ink: #f2f6fa;
+    --muted: #b7c3cf;
+    --line: rgba(255,255,255,0.14);
+    --teal: #3ef0d2;
+    --teal-ink: #04241f;
+    --gold: #f0c14a;
+    --gold-ink: #241a06;
+    --red: #ff5d6c;
+    --blue: #7eb6ff;
   }
   * { box-sizing: border-box; }
   [hidden] { display: none !important; }
   html, body { margin: 0; padding: 0; }
   body {
+    min-height: 100vh;
     font-family: "Leelawadee UI", "Segoe UI", Tahoma, sans-serif;
     color: var(--ink);
-    background: var(--bg);
+    background:
+      radial-gradient(900px 420px at 0% -10%, rgba(255,93,108,0.16), transparent 55%),
+      radial-gradient(800px 480px at 100% 0%, rgba(126,182,255,0.18), transparent 50%),
+      radial-gradient(700px 400px at 50% 100%, rgba(62,240,210,0.06), transparent 50%),
+      var(--bg);
     line-height: 1.45;
   }
   body::before {
     content: "";
     display: block;
-    height: 6px;
-    background: linear-gradient(90deg, #d62828 0 32%, #e0b33a 32% 68%, #1d4e9e 68% 100%);
+    height: 5px;
+    background: linear-gradient(90deg, var(--red) 0 32%, var(--gold) 32% 68%, var(--blue) 68% 100%);
   }
-  .wrap { max-width: 1280px; margin: 0 auto; padding: 14px 16px 28px; }
+  .app {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 12px 16px 96px;
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh - 5px);
+    overflow: auto;
+  }
   header.top {
     display: flex;
     justify-content: space-between;
     gap: 16px;
     align-items: flex-end;
-    margin-bottom: 12px;
   }
-  .eyebrow { margin: 0; color: var(--teal); font-size: 13px; font-weight: 700; letter-spacing: 0.02em; }
-  h1 { margin: 0; font-size: 30px; line-height: 1.2; }
+  .eyebrow { margin: 0; color: var(--teal); font-size: 13px; font-weight: 700; }
+  h1 { margin: 0; font-size: 28px; line-height: 1.15; letter-spacing: -0.02em; }
   .sub { margin: 4px 0 0; color: var(--muted); font-size: 14px; }
   .c-badge {
-    background: #1c2b33;
-    color: #f7f3ea;
-    border-radius: 12px;
-    padding: 10px 14px;
-    min-width: 220px;
+    background: rgba(8,12,18,0.8);
+    border: 1px solid rgba(240,193,74,0.45);
+    color: var(--ink);
+    border-radius: 14px;
+    padding: 8px 14px;
+    min-width: 210px;
     text-align: right;
   }
-  .c-badge span { display: block; font-size: 12px; color: #c9d5dc; }
-  .c-badge strong { display: block; font-size: 18px; color: #f0c14a; font-weight: 700; }
-  .layout {
-    display: grid;
-    grid-template-columns: 292px minmax(0, 1fr) 330px;
-    gap: 12px;
-    align-items: start;
+  .c-badge span { display: block; font-size: 12px; color: var(--muted); }
+  .c-badge strong { display: block; font-size: 18px; color: var(--gold); font-weight: 800; }
+  .toolbar {
+    display: flex;
+    gap: 10px;
+    align-items: stretch;
+    margin: 12px 0 10px;
+    flex-wrap: wrap;
   }
-  .side, .center {
-    background: var(--panel);
-    border: 1px solid var(--line);
-    border-radius: 14px;
-    padding: 12px;
-  }
-  @media (min-width: 1101px) {
-    .side { position: sticky; top: 8px; max-height: calc(100vh - 16px); overflow: auto; }
-  }
-  h2 { margin: 0 0 8px; font-size: 16px; }
-  .modes { display: grid; gap: 6px; }
-  .mode-btn, .band, .transport button, .ghost {
+  .modes { display: flex; gap: 6px; flex: 1; flex-wrap: wrap; }
+  h2 { margin: 0; font-size: 16px; }
+  .mode-btn, .band, .transport button, .ghost, .sheet-close {
     font: inherit;
     color: var(--ink);
     cursor: pointer;
     border: 1px solid var(--line);
-    background: #fff;
-    border-radius: 10px;
+    background: rgba(255,255,255,0.04);
+    border-radius: 12px;
   }
-  .mode-btn { text-align: left; padding: 7px 10px; width: 100%; }
+  .mode-btn { text-align: left; padding: 8px 10px; flex: 1; min-width: 132px; }
   .mode-btn b { display: block; font-size: 14px; }
   .mode-btn small { display: block; color: var(--muted); font-size: 12px; }
-  .mode-btn.active { border-color: var(--teal); background: var(--teal-soft); box-shadow: inset 3px 0 0 var(--teal); }
-  .transport { display: flex; gap: 6px; margin: 8px 0; }
-  .transport button, .ghost { min-height: 40px; padding: 6px 10px; }
-  .transport button { flex: 1; font-weight: 700; }
-  #btnPlay { background: var(--teal); color: white; border-color: var(--teal); }
+  .mode-btn.active {
+    border-color: var(--teal);
+    background: rgba(62,240,210,0.12);
+    box-shadow: inset 3px 0 0 var(--teal);
+  }
+  .transport { display: flex; gap: 6px; }
+  .transport button, .ghost, .sheet-close { min-height: 42px; padding: 6px 14px; }
+  .transport button { font-weight: 800; }
+  #btnPlay { background: var(--teal); color: var(--teal-ink); border-color: transparent; }
+  #btnReset { background: rgba(255,255,255,0.06); }
+  .center { display: flex; flex-direction: column; flex: 1; min-height: 0; }
   .field { margin-top: 10px; }
   .field-head, .switch { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
-  label, .switch { font-size: 13.5px; font-weight: 650; }
-  output { font-weight: 700; color: var(--teal); font-size: 13px; }
-  input[type="range"] { width: 100%; accent-color: var(--teal); height: 28px; }
-  .hint { margin: 2px 0 0; color: var(--muted); font-size: 12px; }
+  label, .switch { font-size: 14px; font-weight: 700; }
+  output { font-weight: 800; color: var(--teal); font-size: 13px; }
+  input[type="range"] { width: 100%; accent-color: #2ee6c7; height: 28px; }
+  .hint { margin: 2px 0 0; color: var(--muted); font-size: 12.5px; }
   .slider-wrap { position: relative; }
   .tick {
     position: absolute; top: 8px; width: 2px; height: 14px;
     background: var(--gold); pointer-events: none; transform: translateX(-1px);
   }
   .bands { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-top: 6px; }
-  .band { display: flex; align-items: center; gap: 6px; padding: 6px 8px; min-height: 36px; font-size: 13px; }
-  .band i { width: 12px; height: 12px; border-radius: 99px; display: block; flex: 0 0 auto; border: 1px solid rgba(0,0,0,.2); }
-  .band.active { border-color: var(--teal); background: var(--teal-soft); font-weight: 700; }
+  .band { display: flex; align-items: center; gap: 6px; padding: 7px 8px; min-height: 38px; font-size: 13.5px; }
+  .band i { width: 12px; height: 12px; border-radius: 99px; display: block; flex: 0 0 auto; border: 1px solid rgba(255,255,255,0.35); }
+  .band.active { border-color: var(--teal); background: rgba(62,240,210,0.14); font-weight: 800; }
   .band:last-child { grid-column: 1 / -1; }
-  details.box { border: 1px solid var(--line); border-radius: 10px; padding: 8px 10px; background: #fff; margin-top: 8px; }
-  details.box[open] { border-color: var(--teal); background: #f7fcfb; }
-  summary { cursor: pointer; font-weight: 700; font-size: 14px; }
+  details.box {
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 8px 10px;
+    background: rgba(255,255,255,0.03);
+    margin-top: 8px;
+  }
+  details.box[open] { border-color: rgba(62,240,210,0.55); background: rgba(62,240,210,0.06); }
+  summary { cursor: pointer; font-weight: 800; font-size: 14px; }
   .switches { display: grid; gap: 8px; margin-top: 10px; }
-  .switch { justify-content: flex-start; font-weight: 600; }
+  .switch { justify-content: flex-start; font-weight: 650; }
   .switch input {
     appearance: none; width: 42px; height: 24px; border-radius: 99px;
-    background: #c5d0d6; position: relative; cursor: pointer; flex: 0 0 auto; margin: 0;
+    background: #3a4654; position: relative; cursor: pointer; flex: 0 0 auto; margin: 0;
   }
   .switch input::after {
     content: ""; width: 18px; height: 18px; border-radius: 50%; background: white;
     position: absolute; top: 3px; left: 3px;
   }
-  .switch input:checked { background: var(--teal); }
+  .switch input:checked { background: #149e8c; }
   .switch input:checked::after { left: 21px; }
-  .const { color: var(--muted); font-size: 13px; margin: 6px 0 0; }
+  .const { color: var(--muted); font-size: 13.5px; margin: 6px 0 0; }
   .stage {
-    height: min(48vh, 460px);
-    min-height: 340px;
-    border: 1px solid var(--line);
-    border-radius: 12px;
+    flex: 1 1 auto;
+    min-height: 280px;
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 18px;
     overflow: hidden;
-    background: #f7f4ee;
+    background: #0c1218;
+    box-shadow: 0 18px 50px rgba(0,0,0,0.45), inset 0 0 0 1px rgba(255,255,255,0.03);
   }
   canvas { width: 100%; height: 100%; display: block; touch-action: none; }
-  .caption { margin: 8px 2px; color: var(--muted); font-size: 13px; min-height: 2.6em; }
-  .cards { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 6px; }
-  .card { border: 1px solid var(--line); border-radius: 10px; padding: 7px 8px; background: #fff; min-width: 0; }
-  .card.hot { border-color: var(--teal); box-shadow: inset 0 -3px 0 var(--teal); }
-  .card h3 { margin: 0; font-size: 12px; color: var(--muted); font-weight: 650; }
-  .card .val { margin: 2px 0 0; font-size: 16px; font-weight: 750; word-break: break-word; }
-  .card .sub { margin: 0; font-size: 11.5px; color: var(--muted); min-height: 1.2em; }
+  .caption { margin: 8px 2px 0; color: var(--muted); font-size: 13.5px; }
+  .cards { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 8px; margin-top: 8px; }
+  .card {
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 8px 10px;
+    background: rgba(255,255,255,0.04);
+    min-width: 0;
+  }
+  .card.hot { border-color: rgba(62,240,210,0.7); box-shadow: inset 0 -3px 0 var(--teal); }
+  .card h3 { margin: 0; font-size: 12px; color: var(--muted); font-weight: 700; }
+  .card .val { margin: 2px 0 0; font-size: 16px; font-weight: 800; word-break: break-word; color: #fff; }
+  .card .sub { margin: 0; font-size: 12px; color: var(--muted); min-height: 1.2em; }
   .equation {
     margin-top: 8px;
-    background: #1c2b33;
-    color: #f4efe4;
-    border-radius: 10px;
+    background: #10161e;
+    color: #f7f1e4;
+    border-radius: 12px;
+    border: 1px solid rgba(240,193,74,0.28);
+    border-left: 4px solid var(--gold);
     padding: 10px 12px;
-    font-size: 14px;
+    font-size: 14.5px;
     line-height: 1.55;
   }
-  .equation b { color: #f0c14a; }
-  .graph-wrap { height: 248px; border: 1px solid var(--line); border-radius: 10px; overflow: hidden; background: #fff; }
-  #graphTitle { margin: 0 0 6px; font-weight: 700; font-size: 14px; }
-  #graphNote, #analysis { font-size: 13.5px; }
+  .equation b { color: var(--gold); }
+  .dock {
+    position: fixed;
+    z-index: 30;
+    left: 0; right: 0; bottom: 0;
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 12px 16px 14px;
+    pointer-events: none;
+    background: linear-gradient(180deg, rgba(7,9,13,0), rgba(7,9,13,0.96) 46%);
+  }
+  .fab {
+    pointer-events: auto;
+    border: 0;
+    border-radius: 999px;
+    min-height: 48px;
+    padding: 10px 18px;
+    font: inherit;
+    font-weight: 800;
+    font-size: 15px;
+    cursor: pointer;
+    color: var(--teal-ink);
+    background: linear-gradient(180deg, #8ff8e8, var(--teal));
+    box-shadow: 0 10px 28px rgba(62,240,210,0.28);
+  }
+  .fab-graph {
+    color: var(--gold-ink);
+    background: linear-gradient(180deg, #ffe08a, var(--gold));
+    box-shadow: 0 10px 28px rgba(240,193,74,0.28);
+  }
+  .fab[aria-expanded="true"] { transform: translateY(-2px); }
+  .sheet {
+    position: fixed;
+    z-index: 40;
+    bottom: 78px;
+    width: min(420px, calc(100vw - 24px));
+    max-height: min(72vh, 760px);
+    overflow: auto;
+    padding: 14px;
+    border-radius: 18px;
+    border: 1px solid rgba(255,255,255,0.14);
+    background: rgba(12,16,22,0.96);
+    box-shadow: 0 24px 70px rgba(0,0,0,0.55);
+    transform: translateY(28px);
+    opacity: 0;
+    pointer-events: none;
+    transition: transform 0.34s cubic-bezier(0.18, 1.35, 0.36, 1), opacity 0.2s ease;
+  }
+  .sheet-controls { left: 12px; }
+  .sheet-graph { right: 12px; width: min(480px, calc(100vw - 24px)); }
+  .sheet.open { transform: translateY(0); opacity: 1; pointer-events: auto; }
+  .sheet-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 8px; }
+  .sheet-close { min-height: 36px; padding: 4px 12px; }
+  .graph-wrap { height: 260px; border: 1px solid var(--line); border-radius: 12px; overflow: hidden; background: #0c1218; }
+  #graphTitle { margin: 0 0 6px; font-weight: 800; font-size: 15px; }
+  #graphNote, #analysis { font-size: 14px; }
   #graphNote { color: var(--muted); margin: 6px 0 0; }
+  #analysis { margin-top: 12px; }
   #analysis p { margin: 0 0 8px; }
   #analysis b { color: var(--teal); }
-  .mis { margin-top: 10px; background: var(--warn); border: 1px solid #efd3a8; border-radius: 12px; padding: 10px 12px; }
-  .mis h2 { font-size: 15px; }
-  .tag { margin: 8px 0 2px; font-size: 12px; font-weight: 800; color: var(--warn-ink); }
-  .tag.ok { color: var(--ok-ink); }
-  #misWrong, #misRight { margin: 0; font-size: 13.5px; }
-  #misRight { background: var(--ok); border-radius: 8px; padding: 8px; }
-  .sr {
-    position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0);
+  .mis {
+    margin-top: 12px;
+    background: #2a2116;
+    border: 1px solid rgba(240,193,74,0.35);
+    border-radius: 12px;
+    padding: 10px 12px;
   }
+  .mis h2 { font-size: 15px; margin-bottom: 4px; }
+  .tag { margin: 8px 0 2px; font-size: 12px; font-weight: 800; color: #ffd7a8; }
+  .tag.ok { color: #b6f3cf; }
+  #misWrong, #misRight { margin: 0; font-size: 14px; }
+  #misRight { background: #14261c; border-radius: 8px; padding: 8px; }
+  .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
   button:focus-visible, input:focus-visible, summary:focus-visible {
     outline: 2px solid var(--teal); outline-offset: 2px;
   }
-  @media (max-width: 1100px) {
-    .layout { grid-template-columns: 1fr; }
+  @media (max-width: 800px) {
     header.top { flex-direction: column; align-items: stretch; }
     .c-badge { text-align: left; }
     .cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-    .stage { height: 380px; }
+    .stage { min-height: 420px; }
+    .sheet-controls, .sheet-graph { left: 12px; right: 12px; width: auto; }
+    .modes { display: grid; grid-template-columns: 1fr 1fr; }
   }
 </style>
 </head>
 <body>
-<div class="wrap">
+<div class="app">
   <header class="top">
     <div>
       <p class="eyebrow">ฟิสิกส์ มัธยมศึกษาตอนปลาย · ม.4–ม.6</p>
@@ -190,21 +271,44 @@
     </div>
   </header>
 
-  <div class="layout">
-    <aside class="side">
-      <h2>โหมดการจำลอง</h2>
-      <div class="modes" id="modes">
-        <button type="button" class="mode-btn" data-mode="1"><b>1 · องค์ประกอบของคลื่น</b><small>สนาม E⃗, B⃗ และทิศแผ่ c⃗</small></button>
-        <button type="button" class="mode-btn" data-mode="2"><b>2 · สเปกตรัม</b><small>จากคลื่นวิทยุถึงรังสีแกมมา</small></button>
-        <button type="button" class="mode-btn" data-mode="3"><b>3 · กฎของมาลุส</b><small>แผ่นโพลารอยด์สองแผ่น</small></button>
-        <button type="button" class="mode-btn" data-mode="4"><b>4 · มุมบรูว์สเตอร์</b><small>โพลาไรเซชันโดยการสะท้อน</small></button>
-      </div>
-      <div class="transport">
-        <button type="button" id="btnPlay">หยุด</button>
-        <button type="button" id="btnReset">รีเซ็ต</button>
-      </div>
+  <div class="toolbar">
+    <div class="modes" id="modes">
+      <button type="button" class="mode-btn" data-mode="1"><b>1 · คลื่น</b><small>สนาม E⃗, B⃗ และ c⃗</small></button>
+      <button type="button" class="mode-btn" data-mode="2"><b>2 · สเปกตรัม</b><small>วิทยุถึงรังสีแกมมา</small></button>
+      <button type="button" class="mode-btn" data-mode="3"><b>3 · มาลุส</b><small>แผ่นโพลารอยด์</small></button>
+      <button type="button" class="mode-btn" data-mode="4"><b>4 · บรูว์สเตอร์</b><small>โพลาไรซ์โดยการสะท้อน</small></button>
+    </div>
+    <div class="transport">
+      <button type="button" id="btnPlay">หยุด</button>
+      <button type="button" id="btnReset">รีเซ็ต</button>
+    </div>
+  </div>
 
-      <div class="field">
+  <main class="center">
+    <div class="stage"><canvas id="sim" aria-label="พื้นที่จำลองคลื่นแม่เหล็กไฟฟ้า"></canvas></div>
+    <p class="caption" id="caption"></p>
+    <section class="cards" aria-label="ค่าที่คำนวณทันที">
+      <article class="card" id="cardFBox"><h3>ความถี่ f</h3><p class="val" id="cardF">—</p><p class="sub" id="cardFSub"></p></article>
+      <article class="card" id="cardLBox"><h3>ความยาวคลื่น λ</h3><p class="val" id="cardL">—</p><p class="sub" id="cardLSub"></p></article>
+      <article class="card" id="cardEBox"><h3>พลังงานโพตอน E</h3><p class="val" id="cardE">—</p><p class="sub" id="cardESub"></p></article>
+      <article class="card" id="cardIBox"><h3>ความเข้มที่เหลือ I/I₀</h3><p class="val" id="cardI">—</p><p class="sub" id="cardISub"></p></article>
+      <article class="card" id="cardBBox"><h3>มุมบรูว์สเตอร์ θ_B</h3><p class="val" id="cardB">—</p><p class="sub" id="cardBSub"></p></article>
+    </section>
+    <div class="equation" id="equation"></div>
+  </main>
+</div>
+
+<div class="dock">
+  <button type="button" class="fab" id="btnControls" aria-expanded="false" aria-controls="sheetControls">ปรับค่า</button>
+  <button type="button" class="fab fab-graph" id="btnGraph" aria-expanded="false" aria-controls="sheetGraph">กราฟ</button>
+</div>
+
+<aside class="sheet sheet-controls" id="sheetControls" aria-label="แผงปรับค่า">
+  <div class="sheet-head">
+    <h2>ปรับค่า</h2>
+    <button type="button" class="sheet-close" data-close>ปิด</button>
+  </div>
+  <div class="field">
         <div class="field-head">
           <label for="freq">ความถี่ f</label>
           <output id="freqOut" for="freq"></output>
@@ -292,38 +396,25 @@
         <p class="const">μ₀ = 4π×10<sup>−7</sup> T·m/A</p>
         <p class="const">ขอบเขตระหว่างย่านสเปกตรัมเป็นค่าโดยประมาณระดับมัธยม</p>
       </details>
-    </aside>
+</aside>
 
-    <main class="center">
-      <div class="stage"><canvas id="sim" aria-label="พื้นที่จำลองคลื่นแม่เหล็กไฟฟ้า"></canvas></div>
-      <p class="caption" id="caption"></p>
-      <section class="cards" aria-label="ค่าที่คำนวณทันที">
-        <article class="card" id="cardFBox"><h3>ความถี่ f</h3><p class="val" id="cardF">—</p><p class="sub" id="cardFSub"></p></article>
-        <article class="card" id="cardLBox"><h3>ความยาวคลื่น λ</h3><p class="val" id="cardL">—</p><p class="sub" id="cardLSub"></p></article>
-        <article class="card" id="cardEBox"><h3>พลังงานโพตอน E</h3><p class="val" id="cardE">—</p><p class="sub" id="cardESub"></p></article>
-        <article class="card" id="cardIBox"><h3>ความเข้มที่เหลือ I/I₀</h3><p class="val" id="cardI">—</p><p class="sub" id="cardISub"></p></article>
-        <article class="card" id="cardBBox"><h3>มุมบรูว์สเตอร์ θ_B</h3><p class="val" id="cardB">—</p><p class="sub" id="cardBSub"></p></article>
-      </section>
-      <div class="equation" id="equation"></div>
-    </main>
-
-    <aside class="side">
-      <h2>กราฟความสัมพันธ์</h2>
-      <p id="graphTitle"></p>
-      <div class="graph-wrap"><canvas id="graph" aria-label="กราฟความสัมพันธ์ของโหมดปัจจุบัน"></canvas></div>
-      <p id="graphNote"></p>
-      <h2 style="margin-top:14px">ค่าวิเคราะห์</h2>
-      <div id="analysis"></div>
-      <section class="mis">
-        <h2>ความเข้าใจคลาดเคลื่อนที่พบบ่อย</h2>
-        <p class="tag">ที่มักเข้าใจว่า</p>
-        <p id="misWrong"></p>
-        <p class="tag ok">แนวคิดที่ถูกต้อง</p>
-        <p id="misRight"></p>
-      </section>
-    </aside>
+<aside class="sheet sheet-graph" id="sheetGraph" aria-label="กราฟและคำอธิบาย">
+  <div class="sheet-head">
+    <h2>กราฟและคำอธิบาย</h2>
+    <button type="button" class="sheet-close" data-close>ปิด</button>
   </div>
-</div>
+  <p id="graphTitle"></p>
+  <div class="graph-wrap"><canvas id="graph" aria-label="กราฟความสัมพันธ์ของโหมดปัจจุบัน"></canvas></div>
+  <p id="graphNote"></p>
+  <div id="analysis"></div>
+  <section class="mis">
+    <h2>ความเข้าใจคลาดเคลื่อนที่พบบ่อย</h2>
+    <p class="tag">ที่มักเข้าใจว่า</p>
+    <p id="misWrong"></p>
+    <p class="tag ok">แนวคิดที่ถูกต้อง</p>
+    <p id="misRight"></p>
+  </section>
+</aside>
 <p id="live" class="sr" aria-live="polite"></p>
 <noscript>กรุณาเปิดใช้ JavaScript เพื่อดูสื่อจำลองนี้</noscript>
 
@@ -676,7 +767,7 @@ function drawArrow(ctx, x1, y1, x2, y2, color, width) {
 }
 
 function textAt(ctx, str, x, y, size, weight, color, align) {
-  ctx.fillStyle = color || "#1c2b33";
+  ctx.fillStyle = color || "#e7eef6";
   ctx.font = (weight || 400) + " " + (size || 13) + "px " + FONT;
   ctx.textAlign = align || "left";
   ctx.textBaseline = "alphabetic";
@@ -691,7 +782,7 @@ function pill(ctx, str, x, y, color, align) {
   let left = x;
   if (align === "center") left = x - w / 2;
   if (align === "right") left = x - w;
-  ctx.fillStyle = "rgba(255,255,255,0.92)";
+  ctx.fillStyle = "rgba(8,12,18,0.88)";
   ctx.strokeStyle = color;
   ctx.lineWidth = 1;
   roundRect(ctx, left, y - 13, w, 18, 8);
@@ -740,8 +831,8 @@ function drawMode1(ctx, w, h) {
   geom = {};
   ctx.clearRect(0, 0, w, h);
   const grd = ctx.createLinearGradient(0, 0, 0, h);
-  grd.addColorStop(0, "#fbf8f2");
-  grd.addColorStop(1, "#efe6d6");
+  grd.addColorStop(0, "#161d28");
+  grd.addColorStop(1, "#0c1118");
   ctx.fillStyle = grd;
   ctx.fillRect(0, 0, w, h);
 
@@ -751,7 +842,7 @@ function drawMode1(ctx, w, h) {
   const steps = 180;
 
   ctx.save();
-  ctx.strokeStyle = "rgba(28,43,51,0.08)";
+  ctx.strokeStyle = "rgba(255,255,255,0.08)";
   ctx.lineWidth = 1;
   for (let i = 0; i <= 8; i++) {
     const a = proj.p(i * WORLD_L / 8, 0, -1.15);
@@ -791,12 +882,12 @@ function drawMode1(ctx, w, h) {
     ctx.stroke();
   }
 
-  strokeField("B", "#1d4e9e", "rgba(29,78,158,0.13)");
-  strokeField("E", "#d62828", "rgba(214,40,40,0.13)");
+  strokeField("B", "#6aa7ff", "rgba(29,78,158,0.13)");
+  strokeField("E", "#ff5d6c", "rgba(214,40,40,0.13)");
 
   const xEnd = proj.p(WORLD_L + 0.15, 0, 0);
   const xBeg = proj.p(0, 0, 0);
-  drawArrow(ctx, xBeg.sx, xBeg.sy, xEnd.sx, xEnd.sy, "#8a6508", 2);
+  drawArrow(ctx, xBeg.sx, xBeg.sy, xEnd.sx, xEnd.sy, "#f0c14a", 2);
   const yTip = proj.p(0, 1.2, 0);
   const yBot = proj.p(0, -1.05, 0);
   ctx.save();
@@ -807,12 +898,12 @@ function drawMode1(ctx, w, h) {
   ctx.lineTo(yTip.sx, yTip.sy);
   ctx.stroke();
   ctx.restore();
-  drawArrow(ctx, xBeg.sx, xBeg.sy, yTip.sx, yTip.sy, "#d62828", 1.6);
+  drawArrow(ctx, xBeg.sx, xBeg.sy, yTip.sx, yTip.sy, "#ff5d6c", 1.6);
   const zTip = proj.p(0, 0, 1.2);
-  drawArrow(ctx, xBeg.sx, xBeg.sy, zTip.sx, zTip.sy, "#1d4e9e", 1.6);
-  pill(ctx, "c ทิศแผ่", xEnd.sx - 8, xEnd.sy + 22, "#8a6508", "right");
-  pill(ctx, "E", yTip.sx + 6, yTip.sy - 4, "#d62828", "left");
-  pill(ctx, "B", zTip.sx + 8, zTip.sy + 4, "#1d4e9e", "left");
+  drawArrow(ctx, xBeg.sx, xBeg.sy, zTip.sx, zTip.sy, "#6aa7ff", 1.6);
+  pill(ctx, "c ทิศแผ่", xEnd.sx - 8, xEnd.sy + 22, "#f0c14a", "right");
+  pill(ctx, "E", yTip.sx + 6, yTip.sy - 4, "#ff5d6c", "left");
+  pill(ctx, "B", zTip.sx + 8, zTip.sy + 4, "#6aa7ff", "left");
 
   if (state.showVectors) {
     for (let i = 1; i <= 14; i++) {
@@ -822,8 +913,8 @@ function drawMode1(ctx, w, h) {
       const o = proj.p(x, 0, 0);
       const e = proj.p(x, amp * s, 0);
       const b = proj.p(x, 0, amp * s);
-      drawArrow(ctx, o.sx, o.sy, e.sx, e.sy, "#d62828", 1.7);
-      drawArrow(ctx, o.sx, o.sy, b.sx, b.sy, "#1d4e9e", 1.7);
+      drawArrow(ctx, o.sx, o.sy, e.sx, e.sy, "#ff5d6c", 1.7);
+      drawArrow(ctx, o.sx, o.sy, b.sx, b.sy, "#6aa7ff", 1.7);
     }
     const period = (2 * Math.PI) / info.k;
     const x0 = VWORLD * state.time + (Math.PI / 2) / info.k;
@@ -837,7 +928,7 @@ function drawMode1(ctx, w, h) {
       const mid = proj.p(cx, s, s);
       const c3 = proj.p(cx, 0, s);
       ctx.save();
-      ctx.strokeStyle = "#1c2b33";
+      ctx.strokeStyle = "#e7eef6";
       ctx.lineWidth = 1.2;
       ctx.beginPath();
       ctx.moveTo(a.sx, a.sy);
@@ -845,22 +936,22 @@ function drawMode1(ctx, w, h) {
       ctx.lineTo(c3.sx, c3.sy);
       ctx.stroke();
       ctx.restore();
-      pill(ctx, "ตั้งฉาก 90°", mid.sx + 6, mid.sy - 8, "#1c2b33", "left");
+      pill(ctx, "ตั้งฉาก 90°", mid.sx + 6, mid.sy - 8, "#e7eef6", "left");
     }
   }
 
   if (state.showPhotons) {
     const a = proj.p(0.7, 0, 0);
     const b = proj.p(3.1, 0, 0);
-    drawArrow(ctx, a.sx, a.sy + 34, b.sx, b.sy + 34, "#8a6508", 2.4);
-    pill(ctx, "ทิศพลังงาน", b.sx + 8, b.sy + 38, "#8a6508", "left");
+    drawArrow(ctx, a.sx, a.sy + 34, b.sx, b.sy + 34, "#f0c14a", 2.4);
+    pill(ctx, "ทิศพลังงาน", b.sx + 8, b.sy + 38, "#f0c14a", "left");
     for (let i = 0; i < 5; i++) {
       let x = (VWORLD * state.time * 0.85 + i * WORLD_L / 5) % WORLD_L;
       if (x < 0) x += WORLD_L;
       const q = proj.p(x, 0, 0);
       ctx.beginPath();
       ctx.fillStyle = colorForFreq(freq());
-      ctx.strokeStyle = "#1c2b33";
+      ctx.strokeStyle = "#e7eef6";
       ctx.lineWidth = 1;
       ctx.arc(q.sx, q.sy - 10, 4.5, 0, Math.PI * 2);
       ctx.fill();
@@ -869,16 +960,16 @@ function drawMode1(ctx, w, h) {
   }
 
   const band = bandOf(freq());
-  pill(ctx, "สุญญากาศ · " + band.name, 12, 22, "#0f6e6e", "left");
-  textAt(ctx, "E₀/B₀ = c  ·  ลูกศร B ถูกขยายให้เทียบกับ E", 12, h - 14, 12, 600, "#5c6f7a", "left");
+  pill(ctx, "สุญญากาศ · " + band.name, 12, 22, "#5ef0d8", "left");
+  textAt(ctx, "E₀/B₀ = c  ·  ลูกศร B ถูกขยายให้เทียบกับ E", 12, h - 14, 12, 600, "#b7c5d1", "left");
   if (!state.playing) pill(ctx, "หยุดชั่วคราว", w - 12, 22, "#7a3e12", "right");
 }
 
 function drawIcon(ctx, band, x, y, w, h) {
   ctx.save();
   ctx.translate(x, y);
-  ctx.strokeStyle = "#1c2b33";
-  ctx.fillStyle = "#1c2b33";
+  ctx.strokeStyle = "#e7eef6";
+  ctx.fillStyle = "#e7eef6";
   ctx.lineWidth = 2;
   ctx.lineCap = "round";
   const t = state.time;
@@ -939,7 +1030,7 @@ function drawIcon(ctx, band, x, y, w, h) {
     ctx.beginPath();
     ctx.arc(w * 0.18, h * 0.4, 16, 0, Math.PI * 2);
     ctx.fill();
-    ctx.strokeStyle = "#1c2b33";
+    ctx.strokeStyle = "#e7eef6";
     ctx.beginPath();
     ctx.moveTo(w * 0.42, h * 0.62);
     ctx.lineTo(w * 0.56, h * 0.2);
@@ -955,7 +1046,7 @@ function drawIcon(ctx, band, x, y, w, h) {
       ctx.stroke();
     }
     const nm = PHYS.c / freq() * 1e9;
-    textAt(ctx, "แสงที่มองเห็น · " + (colorName(nm) || ""), w * 0.5, h - 4, 13, 700, "#1c2b33", "center");
+    textAt(ctx, "แสงที่มองเห็น · " + (colorName(nm) || ""), w * 0.5, h - 4, 13, 700, "#e7eef6", "center");
   } else if (band.id === "uv") {
     ctx.fillStyle = "#f7dc6f";
     ctx.beginPath();
@@ -984,7 +1075,7 @@ function drawIcon(ctx, band, x, y, w, h) {
     ctx.fillStyle = "#f5e6d3";
     roundRect(ctx, w * 0.48, h * 0.3, w * 0.28, h * 0.42, 20);
     ctx.fill();
-    ctx.strokeStyle = "#1c2b33";
+    ctx.strokeStyle = "#e7eef6";
     ctx.stroke();
     ctx.strokeStyle = "#fdfefe";
     ctx.lineWidth = 3;
@@ -1014,7 +1105,7 @@ function drawIcon(ctx, band, x, y, w, h) {
     ctx.lineTo(w * 0.58, h * 0.54);
     ctx.stroke();
     ctx.fillStyle = "#d5d8dc";
-    ctx.strokeStyle = "#1c2b33";
+    ctx.strokeStyle = "#e7eef6";
     ctx.fillRect(w * 0.68, h * 0.28, w * 0.16, h * 0.4);
     ctx.strokeRect(w * 0.68, h * 0.28, w * 0.16, h * 0.4);
     textAt(ctx, "รังสีแกมมาและกำบังหนา", w * 0.5, h - 4, 13, 700, "#6c3483", "center");
@@ -1029,10 +1120,10 @@ function drawLogBar(ctx, x, y, w, hgt) {
     ctx.fillStyle = colorForFreq(10 ** logv);
     ctx.fillRect(x + i, y, 1, hgt);
   }
-  ctx.strokeStyle = "#1c2b33";
+  ctx.strokeStyle = "#e7eef6";
   ctx.lineWidth = 1;
   ctx.strokeRect(x, y, w, hgt);
-  ctx.fillStyle = "#3e5563";
+  ctx.fillStyle = "#d5dee6";
   ctx.font = "11px " + FONT;
   ctx.textAlign = "center";
   for (let p = 3; p <= 20; p += 3) {
@@ -1044,7 +1135,7 @@ function drawLogBar(ctx, x, y, w, hgt) {
     ctx.fillText("10" + toSup(p), px, y + hgt + 16);
   }
   const nx = x + ((state.logF - 3) / 17) * w;
-  ctx.fillStyle = "#1c2b33";
+  ctx.fillStyle = "#e7eef6";
   ctx.beginPath();
   ctx.moveTo(nx, y - 2);
   ctx.lineTo(nx - 6, y - 12);
@@ -1054,13 +1145,13 @@ function drawLogBar(ctx, x, y, w, hgt) {
   ctx.beginPath();
   ctx.moveTo(nx, y - 2);
   ctx.lineTo(nx, y + hgt + 2);
-  ctx.strokeStyle = "#1c2b33";
+  ctx.strokeStyle = "#e7eef6";
   ctx.stroke();
   ctx.textAlign = "left";
 }
 
 function drawVisibleInset(ctx, x, y, w) {
-  textAt(ctx, "ขยายแถบแสงที่มองเห็น 380–750 nm", x, y, 12, 700, "#1c2b33", "left");
+  textAt(ctx, "ขยายแถบแสงที่มองเห็น 380–750 nm", x, y, 12, 700, "#e7eef6", "left");
   const by = y + 8;
   const bh = 16;
   for (let i = 0; i < w; i++) {
@@ -1068,15 +1159,15 @@ function drawVisibleInset(ctx, x, y, w) {
     ctx.fillStyle = wavelengthToRGB(nm).css;
     ctx.fillRect(x + i, by, 1, bh);
   }
-  ctx.strokeStyle = "#1c2b33";
+  ctx.strokeStyle = "#e7eef6";
   ctx.strokeRect(x, by, w, bh);
   const nmNow = PHYS.c / freq() * 1e9;
   if (nmNow >= 380 && nmNow <= 750) {
     const px = x + ((750 - nmNow) / (750 - 380)) * w;
-    ctx.fillStyle = "#1c2b33";
+    ctx.fillStyle = "#e7eef6";
     ctx.fillRect(px - 1, by - 3, 2, bh + 6);
   }
-  ctx.fillStyle = "#5c6f7a";
+  ctx.fillStyle = "#b7c5d1";
   ctx.font = "11px " + FONT;
   ctx.textAlign = "left";
   ctx.fillText("แดง 750", x, by + bh + 14);
@@ -1088,11 +1179,11 @@ function drawVisibleInset(ctx, x, y, w) {
 
 function drawSpeedLanes(ctx, x, y, w, hgt) {
   roundRect(ctx, x, y, w, hgt, 8);
-  ctx.fillStyle = "rgba(255,255,255,0.72)";
+  ctx.fillStyle = "rgba(8,12,18,0.62)";
   ctx.fill();
-  ctx.strokeStyle = "#d3dee3";
+  ctx.strokeStyle = "rgba(255,255,255,0.2)";
   ctx.stroke();
-  textAt(ctx, "ความยาวคลื่นต่างกัน แต่จุดอ้างอิงเคลื่อนที่เร็วเท่ากัน = c", x + 10, y + 16, 12, 700, "#1c2b33", "left");
+  textAt(ctx, "ความยาวคลื่นต่างกัน แต่จุดอ้างอิงเคลื่อนที่เร็วเท่ากัน = c", x + 10, y + 16, 12, 700, "#e7eef6", "left");
   const v = 42;
   const marker = (v * state.time) % Math.max(20, w - 20);
   const lanes = [
@@ -1116,7 +1207,7 @@ function drawSpeedLanes(ctx, x, y, w, hgt) {
     ctx.stroke();
   });
   ctx.restore();
-  ctx.strokeStyle = "#8a6508";
+  ctx.strokeStyle = "#f0c14a";
   ctx.lineWidth = 1.5;
   ctx.beginPath();
   ctx.moveTo(x + 8 + marker, y + 22);
@@ -1126,21 +1217,21 @@ function drawSpeedLanes(ctx, x, y, w, hgt) {
 
 function drawMode2(ctx, w, h) {
   ctx.clearRect(0, 0, w, h);
-  ctx.fillStyle = "#f4f7f8";
+  ctx.fillStyle = "#10161e";
   ctx.fillRect(0, 0, w, h);
   const band = bandOf(freq());
   const f = freq();
   const lam = lambda();
   const eV = PHYS.hEv * f;
-  textAt(ctx, band.name, 16, 28, 22, 750, "#1c2b33", "left");
+  textAt(ctx, band.name, 16, 28, 22, 750, "#e7eef6", "left");
   ctx.fillStyle = colorForFreq(f);
   ctx.beginPath();
   ctx.arc(w - 28, 22, 10, 0, Math.PI * 2);
   ctx.fill();
-  ctx.strokeStyle = "#1c2b33";
+  ctx.strokeStyle = "#e7eef6";
   ctx.stroke();
-  textAt(ctx, "λ = " + lengthPlain(lam) + "    E = " + energyPlain(eV), 16, 50, 14, 650, "#0f6e6e", "left");
-  textAt(ctx, "ความเร็วในสุญญากาศยังเป็น c = 3.00×10" + toSup(8) + " m/s", 16, 70, 13, 600, "#8a6508", "left");
+  textAt(ctx, "λ = " + lengthPlain(lam) + "    E = " + energyPlain(eV), 16, 50, 14, 650, "#5ef0d8", "left");
+  textAt(ctx, "ความเร็วในสุญญากาศยังเป็น c = 3.00×10" + toSup(8) + " m/s", 16, 70, 13, 600, "#f0c14a", "left");
 
   const lanesH = Math.max(78, Math.min(120, h * 0.28));
   const lanesY = h - 12 - lanesH;
@@ -1208,7 +1299,7 @@ function drawOscArrow(ctx, x, y, theta, length, color) {
 function drawMode3(ctx, w, h) {
   geom = {};
   ctx.clearRect(0, 0, w, h);
-  ctx.fillStyle = "#f3f6f8";
+  ctx.fillStyle = "#10161e";
   ctx.fillRect(0, 0, w, h);
   const m = malus(state.theta1, state.theta2);
   const yb = h * 0.64;
@@ -1229,17 +1320,17 @@ function drawMode3(ctx, w, h) {
   beam(x2, x3, m.I2);
 
   ctx.fillStyle = "#f4d27a";
-  ctx.strokeStyle = "#8a6508";
+  ctx.strokeStyle = "#f0c14a";
   ctx.lineWidth = 2;
   ctx.beginPath();
   ctx.arc(x0, yb, 16, 0, Math.PI * 2);
   ctx.fill();
   ctx.stroke();
-  textAt(ctx, "แหล่งแสง", x0, yb + 36, 12, 700, "#8a6508", "center");
+  textAt(ctx, "แหล่งแสง", x0, yb + 36, 12, 700, "#f0c14a", "center");
 
   function slab(x) {
     ctx.fillStyle = "rgba(29,78,158,0.12)";
-    ctx.strokeStyle = "#1d4e9e";
+    ctx.strokeStyle = "#6aa7ff";
     ctx.lineWidth = 2;
     roundRect(ctx, x - 9, yb - 70, 18, 140, 4);
     ctx.fill();
@@ -1248,7 +1339,7 @@ function drawMode3(ctx, w, h) {
   slab(x1);
   slab(x2);
   const dialY = h * 0.28;
-  drawDial(ctx, x1, dialY, 28, state.theta1, "#0f6e6e", "θ₁ = " + state.theta1 + "°");
+  drawDial(ctx, x1, dialY, 28, state.theta1, "#5ef0d8", "θ₁ = " + state.theta1 + "°");
   drawDial(ctx, x2, dialY, 28, state.theta2, "#7a3e12", "θ₂ = " + state.theta2 + "°");
   ctx.strokeStyle = "#9bb0ba";
   ctx.setLineDash([3, 3]);
@@ -1266,27 +1357,27 @@ function drawMode3(ctx, w, h) {
     [0, 45, 90, 135].forEach((ang) => drawOscArrow(ctx, fan, yb, ang, 15, "rgba(214,40,40,0.8)"));
     const len1 = 24 + Math.abs(pulse) * 16;
     const mid1 = (x1 + x2) / 2;
-    drawOscArrow(ctx, mid1, yb, state.theta1, len1, "#d62828");
+    drawOscArrow(ctx, mid1, yb, state.theta1, len1, "#ff5d6c");
     const d1 = axisDir(state.theta1);
-    textAt(ctx, "E", mid1 + d1.x * (len1 + 14), yb + d1.y * (len1 + 14), 13, 800, "#d62828", "center");
+    textAt(ctx, "E", mid1 + d1.x * (len1 + 14), yb + d1.y * (len1 + 14), 13, 800, "#ff5d6c", "center");
     const outLen = len1 * Math.sqrt(m.cos2);
     const mid2 = (x2 + x3) / 2 - 6;
     if (outLen > 3) {
-      drawOscArrow(ctx, mid2, yb, state.theta2, outLen, "#d62828");
+      drawOscArrow(ctx, mid2, yb, state.theta2, outLen, "#ff5d6c");
       const d2 = axisDir(state.theta2);
-      textAt(ctx, "E", mid2 + d2.x * (outLen + 14), yb + d2.y * (outLen + 14), 13, 800, "#d62828", "center");
+      textAt(ctx, "E", mid2 + d2.x * (outLen + 14), yb + d2.y * (outLen + 14), 13, 800, "#ff5d6c", "center");
     }
   }
   if (state.showPhotons) {
-    drawArrow(ctx, x0 + 20, yb - 28, x1 - 20, yb - 28, "#8a6508", 1.6);
-    if (m.I2 > 0.02) drawArrow(ctx, x2 + 16, yb - 28, x3 - 10, yb - 28, "#8a6508", 1.6);
+    drawArrow(ctx, x0 + 20, yb - 28, x1 - 20, yb - 28, "#f0c14a", 1.6);
+    if (m.I2 > 0.02) drawArrow(ctx, x2 + 16, yb - 28, x3 - 10, yb - 28, "#f0c14a", 1.6);
   }
 
-  textAt(ctx, "ไม่โพลาไรซ์  I₀", (x0 + x1) / 2, yb + 58, 13, 700, "#1c2b33", "center");
-  textAt(ctx, "I₁ = I₀/2", (x1 + x2) / 2, yb + 58, 13, 700, "#1c2b33", "center");
-  textAt(ctx, "I₂/I₀ = " + m.I2.toFixed(3), (x2 + x3) / 2, yb + 58, 13, 700, "#1c2b33", "center");
+  textAt(ctx, "ไม่โพลาไรซ์  I₀", (x0 + x1) / 2, yb + 58, 13, 700, "#e7eef6", "center");
+  textAt(ctx, "I₁ = I₀/2", (x1 + x2) / 2, yb + 58, 13, 700, "#e7eef6", "center");
+  textAt(ctx, "I₂/I₀ = " + m.I2.toFixed(3), (x2 + x3) / 2, yb + 58, 13, 700, "#e7eef6", "center");
   const dShow = (m.delta > 0 ? "+" : "") + m.delta + "°";
-  pill(ctx, "Δθ = " + dShow + "   cos²Δθ = " + m.cos2.toFixed(3), w / 2, h - 16, "#0f6e6e", "center");
+  pill(ctx, "Δθ = " + dShow + "   cos²Δθ = " + m.cos2.toFixed(3), w / 2, h - 16, "#5ef0d8", "center");
   if (m.I2 < 0.02) pill(ctx, "ไม่มีแสงผ่าน", (x2 + x3) / 2, yb - 48, "#7a3e12", "center");
   if (!state.playing) pill(ctx, "หยุดชั่วคราว", w - 12, 22, "#7a3e12", "right");
 }
@@ -1305,35 +1396,34 @@ function drawMode4(ctx, w, h) {
 
   function shade(n) {
     const t = (n - 1) / 1.5;
-    const g = Math.round(236 - t * 55);
-    const b = Math.round(228 - t * 40);
-    return "rgb(" + (g - 6) + "," + g + "," + b + ")";
+    const v = Math.round(16 + t * 34);
+    return "rgb(" + v + "," + (v + 10) + "," + (v + 22) + ")";
   }
   ctx.fillStyle = shade(n1);
   ctx.fillRect(0, 0, w, midY);
   ctx.fillStyle = shade(n2);
   ctx.fillRect(0, midY, w, h - midY);
-  ctx.strokeStyle = "#1c2b33";
+  ctx.strokeStyle = "#e7eef6";
   ctx.lineWidth = 2;
   ctx.beginPath();
   ctx.moveTo(0, midY);
   ctx.lineTo(w, midY);
   ctx.stroke();
 
-  textAt(ctx, "ตัวกลาง 1 · n₁ = " + n1.toFixed(2) + " · " + mediumNick(n1), 12, 24, 13, 700, "#1c2b33", "left");
-  textAt(ctx, "ตัวกลาง 2 · n₂ = " + n2.toFixed(2) + " · " + mediumNick(n2), 12, h - 16, 13, 700, "#1c2b33", "left");
-  textAt(ctx, "ระนาบนี้คือระนาบตกกระทบ", w - 12, 24, 12, 600, "#5c6f7a", "right");
+  textAt(ctx, "ตัวกลาง 1 · n₁ = " + n1.toFixed(2) + " · " + mediumNick(n1), 12, 24, 13, 700, "#e7eef6", "left");
+  textAt(ctx, "ตัวกลาง 2 · n₂ = " + n2.toFixed(2) + " · " + mediumNick(n2), 12, h - 16, 13, 700, "#e7eef6", "left");
+  textAt(ctx, "ระนาบนี้คือระนาบตกกระทบ", w - 12, 24, 12, 600, "#b7c5d1", "right");
 
   ctx.save();
   ctx.setLineDash([5, 4]);
-  ctx.strokeStyle = "#5c6f7a";
+  ctx.strokeStyle = "#b7c5d1";
   ctx.lineWidth = 1.4;
   ctx.beginPath();
   ctx.moveTo(hitX, 36);
   ctx.lineTo(hitX, h - 36);
   ctx.stroke();
   ctx.restore();
-  textAt(ctx, "แนวฉาก", hitX + 8, 48, 12, 650, "#5c6f7a", "left");
+  textAt(ctx, "แนวฉาก", hitX + 8, 48, 12, 650, "#b7c5d1", "left");
 
   const rayLen = Math.min(w * 0.34, h * 0.34);
   const i = deg2rad(th);
@@ -1347,7 +1437,7 @@ function drawMode4(ctx, w, h) {
   function rayLine(a, b, alpha, width) {
     ctx.save();
     ctx.globalAlpha = alpha;
-    drawArrow(ctx, a.x, a.y, b.x, b.y, "#8a6508", width);
+    drawArrow(ctx, a.x, a.y, b.x, b.y, "#f0c14a", width);
     ctx.restore();
   }
   rayLine(start, { x: hitX, y: hitY }, 0.95, 3);
@@ -1372,7 +1462,7 @@ function drawMode4(ctx, w, h) {
       if (k === 0) ctx.moveTo(sx, sy);
       else ctx.lineTo(sx, sy);
     }
-    ctx.strokeStyle = "#1c2b33";
+    ctx.strokeStyle = "#e7eef6";
     ctx.lineWidth = 1.2;
     ctx.stroke();
   }
@@ -1381,11 +1471,11 @@ function drawMode4(ctx, w, h) {
   if (!fr.tir && fr.thetaT !== null) arcFromNormal(1, 48, fr.thetaT, true);
 
   if (th >= 8) {
-    textAt(ctx, "θᵢ", hitX - 52, hitY - 8, 13, 700, "#1c2b33", "right");
-    textAt(ctx, "θᵣ", hitX + 56, hitY - 8, 13, 700, "#1c2b33", "left");
+    textAt(ctx, "θᵢ", hitX - 52, hitY - 8, 13, 700, "#e7eef6", "right");
+    textAt(ctx, "θᵣ", hitX + 56, hitY - 8, 13, 700, "#e7eef6", "left");
   }
   if (!fr.tir && fr.thetaT !== null && fr.thetaT >= 8) {
-    textAt(ctx, "θₜ", hitX + 52, hitY + 28, 13, 700, "#1c2b33", "left");
+    textAt(ctx, "θₜ", hitX + 52, hitY + 28, 13, 700, "#e7eef6", "left");
   }
 
   function components(at, dir, sAmp, pAmp) {
@@ -1394,13 +1484,13 @@ function drawMode4(ctx, w, h) {
     const py = dir.y;
     const nx = -py;
     const ny = px;
-    ctx.fillStyle = "#1d4e9e";
+    ctx.fillStyle = "#6aa7ff";
     ctx.beginPath();
     ctx.arc(at.x, at.y, 3 + 8 * clamp(sAmp, 0, 1), 0, Math.PI * 2);
     ctx.fill();
     if (pAmp > 0.04) {
       const len = 8 + 18 * clamp(pAmp, 0, 1);
-      drawArrow(ctx, at.x - nx * len, at.y - ny * len, at.x + nx * len, at.y + ny * len, "#d62828", 2);
+      drawArrow(ctx, at.x - nx * len, at.y - ny * len, at.x + nx * len, at.y + ny * len, "#ff5d6c", 2);
     }
   }
   const midI = { x: (start.x + hitX) / 2, y: (start.y + hitY) / 2 };
@@ -1421,7 +1511,7 @@ function drawMode4(ctx, w, h) {
   if (nearB && refr) {
     const tr = deg2rad(fr.thetaT);
     ctx.save();
-    ctx.strokeStyle = "#8a6508";
+    ctx.strokeStyle = "#f0c14a";
     ctx.lineWidth = 1.4;
     const s = 16;
     const v1x = Math.sin(i);
@@ -1434,28 +1524,28 @@ function drawMode4(ctx, w, h) {
     ctx.lineTo(hitX + v2x * s, hitY + v2y * s);
     ctx.stroke();
     ctx.restore();
-    pill(ctx, "มุมบรูว์สเตอร์ · แสงสะท้อนโพลาไรซ์สมบูรณ์", w / 2, midY + 22, "#8a6508", "center");
+    pill(ctx, "มุมบรูว์สเตอร์ · แสงสะท้อนโพลาไรซ์สมบูรณ์", w / 2, midY + 22, "#f0c14a", "center");
   } else if (fr.tir) {
     pill(ctx, "สะท้อนกลับหมด", w / 2, midY + 22, "#7a3e12", "center");
   }
 
   const P = polDegree(fr.Rs, fr.Rp);
   const box = "P = " + (P * 100).toFixed(1) + "%   Rs " + fr.Rs.toFixed(3) + "   Rp " + fr.Rp.toFixed(3);
-  pill(ctx, box, w - 12, h - 36, "#1d4e9e", "right");
-  textAt(ctx, "จุดน้ำเงิน = s  ขีดแดง = p", w - 12, h - 16, 12, 600, "#5c6f7a", "right");
+  pill(ctx, box, w - 12, h - 36, "#6aa7ff", "right");
+  textAt(ctx, "จุดน้ำเงิน = s  ขีดแดง = p", w - 12, h - 16, 12, 600, "#b7c5d1", "right");
   if (!state.playing) pill(ctx, "หยุดชั่วคราว", w - 12, 48, "#7a3e12", "right");
 }
 
 function plotFrame(ctx, x, y, w, h) {
-  ctx.fillStyle = "#f7fafb";
+  ctx.fillStyle = "#121922";
   ctx.fillRect(x, y, w, h);
-  ctx.strokeStyle = "#d3dee3";
+  ctx.strokeStyle = "rgba(255,255,255,0.16)";
   ctx.strokeRect(x, y, w, h);
 }
 
 function drawGraph(ctx, w, h) {
   ctx.clearRect(0, 0, w, h);
-  ctx.fillStyle = "#ffffff";
+  ctx.fillStyle = "#0c1218";
   ctx.fillRect(0, 0, w, h);
   if (state.mode === 1) drawGraph1(ctx, w, h);
   else if (state.mode === 2) drawGraph2(ctx, w, h);
@@ -1465,8 +1555,8 @@ function drawGraph(ctx, w, h) {
 
 function drawGraph1(ctx, w, h) {
   const panels = [
-    { name: "Ey / E₀", color: "#d62828", top: 8 },
-    { name: "Bz / B₀", color: "#1d4e9e", top: h / 2 + 2 }
+    { name: "Ey / E₀", color: "#ff5d6c", top: 8 },
+    { name: "Bz / B₀", color: "#6aa7ff", top: h / 2 + 2 }
   ];
   const ph = h / 2 - 14;
   panels.forEach((panel) => {
@@ -1479,7 +1569,7 @@ function drawGraph1(ctx, w, h) {
     const plotH = ph - padB;
     plotFrame(ctx, x0, y0, pw, plotH);
     textAt(ctx, panel.name, 4, y0 + 12, 11, 700, panel.color, "left");
-    ctx.strokeStyle = "#c5d2db";
+    ctx.strokeStyle = "rgba(255,255,255,0.28)";
     ctx.beginPath();
     ctx.moveTo(x0, y0 + plotH / 2);
     ctx.lineTo(x0 + pw, y0 + plotH / 2);
@@ -1498,7 +1588,7 @@ function drawGraph1(ctx, w, h) {
     ctx.stroke();
     ctx.lineWidth = 1;
   });
-  textAt(ctx, "ตำแหน่งตามแนวแผ่ (สเกลภาพ) →", w / 2, h - 2, 11, 600, "#5c6f7a", "center");
+  textAt(ctx, "ตำแหน่งตามแนวแผ่ (สเกลภาพ) →", w / 2, h - 2, 11, 600, "#b7c5d1", "center");
 }
 
 function drawGraph2(ctx, w, h) {
@@ -1516,7 +1606,7 @@ function drawGraph2(ctx, w, h) {
     ctx.globalAlpha = 1;
   });
   ctx.beginPath();
-  ctx.strokeStyle = "#0f6e6e";
+  ctx.strokeStyle = "#5ef0d8";
   ctx.lineWidth = 2;
   for (let i = 0; i <= 80; i++) {
     const logv = 3 + (i / 80) * 17;
@@ -1531,13 +1621,13 @@ function drawGraph2(ctx, w, h) {
   const px = L + ((state.logF - 3) / 17) * pw;
   const py = T + (1 - (logE0 - yMin) / (yMax - yMin)) * ph;
   ctx.fillStyle = colorForFreq(freq());
-  ctx.strokeStyle = "#1c2b33";
+  ctx.strokeStyle = "#e7eef6";
   ctx.lineWidth = 1.5;
   ctx.beginPath();
   ctx.arc(px, py, 5, 0, Math.PI * 2);
   ctx.fill();
   ctx.stroke();
-  ctx.fillStyle = "#5c6f7a";
+  ctx.fillStyle = "#b7c5d1";
   ctx.font = "11px " + FONT;
   ctx.textAlign = "center";
   for (let p = 3; p <= 18; p += 3) {
@@ -1571,24 +1661,24 @@ function drawGraph3(ctx, w, h) {
     ctx.stroke();
     ctx.setLineDash([]);
   }
-  curve((d) => Math.cos(deg2rad(d)) ** 2, "#0f6e6e");
-  curve((d) => 0.5 * Math.cos(deg2rad(d)) ** 2, "#8a6508", [5, 4]);
+  curve((d) => Math.cos(deg2rad(d)) ** 2, "#5ef0d8");
+  curve((d) => 0.5 * Math.cos(deg2rad(d)) ** 2, "#f0c14a", [5, 4]);
   const m = malus(state.theta1, state.theta2);
   const xd = Math.abs(m.delta);
   const sx = L + (xd / 180) * pw;
-  ctx.fillStyle = "#d62828";
+  ctx.fillStyle = "#ff5d6c";
   ctx.beginPath();
   ctx.arc(sx, T + (1 - m.cos2) * ph, 5, 0, Math.PI * 2);
   ctx.fill();
-  ctx.fillStyle = "#5c6f7a";
+  ctx.fillStyle = "#b7c5d1";
   ctx.font = "11px " + FONT;
   ctx.textAlign = "center";
   [0, 45, 90, 135, 180].forEach((d) => ctx.fillText(String(d) + "°", L + (d / 180) * pw, h - 8));
   ctx.textAlign = "right";
   [0, 0.5, 1].forEach((v) => ctx.fillText(v.toFixed(1), L - 4, T + (1 - v) * ph + 3));
   ctx.textAlign = "left";
-  textAt(ctx, "ทึบ I₂/I₁", L + 8, T + 14, 11, 700, "#0f6e6e", "left");
-  textAt(ctx, "ประ I₂/I₀", L + 78, T + 14, 11, 700, "#8a6508", "left");
+  textAt(ctx, "ทึบ I₂/I₁", L + 8, T + 14, 11, 700, "#5ef0d8", "left");
+  textAt(ctx, "ประ I₂/I₀", L + 78, T + 14, 11, 700, "#f0c14a", "left");
 }
 
 function drawGraph4(ctx, w, h) {
@@ -1615,11 +1705,11 @@ function drawGraph4(ctx, w, h) {
     }
     ctx.stroke();
   }
-  curve("Rs", "#1d4e9e");
-  curve("Rp", "#d62828");
+  curve("Rs", "#6aa7ff");
+  curve("Rp", "#ff5d6c");
   const thB = brewsterDeg(state.n1, state.n2);
   ctx.save();
-  ctx.strokeStyle = "#8a6508";
+  ctx.strokeStyle = "#f0c14a";
   ctx.setLineDash([4, 3]);
   ctx.beginPath();
   ctx.moveTo(L + (thB / 90) * pw, T);
@@ -1628,24 +1718,24 @@ function drawGraph4(ctx, w, h) {
   ctx.restore();
   const now = fresnel(state.n1, state.n2, state.thetaI);
   const sx = L + (state.thetaI / 90) * pw;
-  ctx.fillStyle = "#1d4e9e";
+  ctx.fillStyle = "#6aa7ff";
   ctx.beginPath();
   ctx.arc(sx, T + (1 - now.Rs) * ph, 4, 0, Math.PI * 2);
   ctx.fill();
-  ctx.fillStyle = "#d62828";
+  ctx.fillStyle = "#ff5d6c";
   ctx.beginPath();
   ctx.arc(sx, T + (1 - now.Rp) * ph, 4, 0, Math.PI * 2);
   ctx.fill();
-  ctx.fillStyle = "#5c6f7a";
+  ctx.fillStyle = "#b7c5d1";
   ctx.font = "11px " + FONT;
   ctx.textAlign = "center";
   [0, 30, 60, 90].forEach((d) => ctx.fillText(String(d) + "°", L + (d / 90) * pw, h - 8));
   ctx.textAlign = "right";
   [0, 0.5, 1].forEach((v) => ctx.fillText(v.toFixed(1), L - 4, T + (1 - v) * ph + 3));
   ctx.textAlign = "left";
-  textAt(ctx, "น้ำเงิน Rs", L + 6, T + 14, 11, 700, "#1d4e9e", "left");
-  textAt(ctx, "แดง Rp", L + 70, T + 14, 11, 700, "#d62828", "left");
-  textAt(ctx, "ทอง θB", L + 122, T + 14, 11, 700, "#8a6508", "left");
+  textAt(ctx, "น้ำเงิน Rs", L + 6, T + 14, 11, 700, "#6aa7ff", "left");
+  textAt(ctx, "แดง Rp", L + 70, T + 14, 11, 700, "#ff5d6c", "left");
+  textAt(ctx, "ทอง θB", L + 122, T + 14, 11, 700, "#f0c14a", "left");
   ctx.lineWidth = 1;
 }
 
@@ -2093,6 +2183,46 @@ function boot() {
   });
   ui.sim.addEventListener("pointerup", () => { dragging = false; });
   ui.sim.addEventListener("pointercancel", () => { dragging = false; });
+
+  function closeSheets() {
+    document.querySelectorAll(".sheet.open").forEach((el) => el.classList.remove("open"));
+    document.querySelectorAll(".fab").forEach((el) => el.setAttribute("aria-expanded", "false"));
+  }
+  function toggleSheet(sheetId, button) {
+    const sheet = document.getElementById(sheetId);
+    const willOpen = !sheet.classList.contains("open");
+    closeSheets();
+    if (willOpen) {
+      sheet.classList.add("open");
+      button.setAttribute("aria-expanded", "true");
+      requestAnimationFrame(render);
+    }
+  }
+  document.getElementById("btnControls").addEventListener("click", (e) => {
+    e.stopPropagation();
+    toggleSheet("sheetControls", e.currentTarget);
+  });
+  document.getElementById("btnGraph").addEventListener("click", (e) => {
+    e.stopPropagation();
+    toggleSheet("sheetGraph", e.currentTarget);
+  });
+  document.querySelectorAll("[data-close]").forEach((btn) => {
+    btn.addEventListener("click", closeSheets);
+  });
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") closeSheets();
+  });
+  document.addEventListener("pointerdown", (e) => {
+    const t = e.target;
+    if (!t || !t.closest) return;
+    if (t.closest(".sheet") || t.closest(".fab")) return;
+    closeSheets();
+  });
+  try {
+    const panel = new URLSearchParams(location.search).get("panel");
+    if (panel === "controls") toggleSheet("sheetControls", document.getElementById("btnControls"));
+    if (panel === "graph") toggleSheet("sheetGraph", document.getElementById("btnGraph"));
+  } catch (err) { /* ignore */ }
 
   syncInputs();
   openModeBoxes();
